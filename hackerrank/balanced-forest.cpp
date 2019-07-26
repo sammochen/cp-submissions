@@ -1,3 +1,8 @@
+/* 
+Original problem: https://www.hackerrank.com/challenges/balanced-forest
+Author: sammochen
+*/
+
 #define _CRT_SECURE_NO_WARNINGS
 #include "bits/stdc++.h"
 
