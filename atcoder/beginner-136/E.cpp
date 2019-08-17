@@ -1,5 +1,5 @@
 /*
-Original problem: https://atcoder.jp/contests/abc136/tasks/abc136_e
+Original problem: https://atcoder.jp/contests/abc135/tasks/abc135_e
 Author: sammochen
 */
 
@@ -22,81 +22,61 @@ typedef long double ld;
 typedef vector<ll> VLL;
 typedef vector<int> VI;
 
+const ll mod = 1e9+7;
+
 namespace SOLVE {
-	// helper to see if the array can be 0mod using 'cost' up and 'cost' down
-	int good(VLL A, ll mod, ll k) {
-		int n = A.size();
-		REP(i, 0, n) {
-			A[i] = A[i] % mod;
-		}
+    void main() {
+        int n;
+		int x, y;
+		cin >> n >> x >> y;
+		if (n % 2 == 0 && (x + y) % 2 != 0) {
+			cout << "-1" << endl;
+			return;
+		} 
 
-		sort(A.begin(), A.end());
+		int i = 0, j = 0;
+		queue<PII> ans;
 
-		// work out down/up
-		// down[i] is req to down everything up to i-1
-		// up[i] is req to up everything after i
+		while (i != x || j != y) {
+			int di, dj;
 
-		VLL down(n + 1);
-		VLL up(n + 1);
-
-		down[0] = 0;
-		REP(i, 0, n) {
-			down[i + 1] = down[i] + A[i];
-		}
-
-		up[n] = 0;
-		RREP(i, n - 1, 0) {
-			up[i] = up[i + 1] + (mod - A[i]) % mod;
-		}
-
-		ll ans = k + 1; // invalid initially
-		REP(i, 0, n) {
-			// down[i] is down needed up to, not including i
-			if (down[i] == up[i]) {
-				ans = down[i];
+			if (i != x) {
+				if (abs(x - i) >= n) {
+					di = n;
+					dj = 0;
+				} else {
+					di = abs(x - i);
+					dj = n - di;
+				}			
+			} else {
+				if (abs(y - j) >= 2 * n) {
+					di = 0;
+					dj = n;
+				} else {
+					dj = abs(y - j) / 2;
+					di = n - dj;
+				}
 			}
-		}
-		return ans <= k;
-	}
 
-	void main() {
-		ll n, k;
-		cin >> n >> k;
-		VLL A(n);
-		ll t = 0;
-		REP(i, 0, n) {
-			cin >> A[i];
-			t += A[i];
+			i = x > i ? i + di : i - di;
+			j = y > j ? j + dj : j - dj;
+
+			ans.push(MP(i, j));
 		}
 
-		// t is maximum ~1e9
-		// i can use O(sqrt(n)) to find all factors
-		VLL F;
-		for (ll f = 1; f * f <= t; f++) {
-			if (t % f == 0) {
-				F.push_back(f);
-				F.push_back(t / f);
-			}
+		cout << ans.size() << endl;
+		while (ans.size()) {
+			cout << ans.front().first << ' ' << ans.front().second << endl;
+			ans.pop();
 		}
-
-		// largest first: 
-		// i will see if it is possible to let this be gcd
-		sort(F.rbegin(), F.rend());
-		for (ll f: F) {
-			if (good(A, f, k)) {
-				cout << f << endl;
-				return;
-			}
-		}
-		cout << 1 << endl;
-		return;
-	}
+		
+    }
 }
 
 
 signed main() {
 	int t;
-	t = 1; 
+	t = 1;
 	// cin >> t;
 	while (t--) {
 		SOLVE::main();
