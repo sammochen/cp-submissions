@@ -35,15 +35,14 @@ namespace SOLVE {
 			return;
 		}
 		
-		VLL dp(n + 1); // dp[i] says how many total / 3 there are by i
-		
-		ll sum = 0, ans = 0;
+		ll sum = 0, ans = 0, dp = 0; // dp is how many current t/3 there are
 		REP(i,0,n - 1) {
 			sum += A[i];
-			dp[i+1] = dp[i] + (sum == t/3);
 			if (sum == t / 3 * 2) {
-				ans += dp[i];
+				ans += dp;
 			}
+			dp += (sum == t/3);
+			
 		}
 		
 		cout << ans << endl;
