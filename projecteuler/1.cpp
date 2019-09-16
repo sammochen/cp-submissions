@@ -49,8 +49,7 @@ namespace SOLVE {
 	}
 	
 	void main() {
-		ll n, a, b;
-		cin >> n >> a >> b;
+		ll n = 1000, a = 3, b = 5;
 		ll ans = sum(n - 1, a) + sum(n - 1, b) - sum(n - 1, lcm(a,b));
 		
 		cout << ans << endl;
