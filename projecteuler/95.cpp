@@ -50,45 +50,56 @@ namespace SOLVE {
 				t += f * f == x ? 0 : x / f;
 			}
 		}
+		t = t > n ? 0 : t;
 		D[x] = t;
 		return t;
 	}
 	
-	// returns the size of loop, 1 if itself, 0 if no loop
-	ll loop(ll x) {
-		if (x > n || x <= 0) return 0;
+	// three possibilities:
+	// 0. undiscovered: -1
+	// 1. point goes all the way to 0, out of bounds, or to a loop: -2
+	// 2. point is in a cycle: (length of cycle)
+	
+	ll l(ll x) {
+		if (x > n || x <= 0) return -2;
 		if (L[x] != -1) return L[x];
 		
-		map<ll, ll> M;
+		map<ll,ll> current; // keeps track of current path's distance
+		VLL path; // numbers on the current path
 		
-		ll moves = 1;
-		M[x] = moves++;
-		ll xx = d(x);
-		while (M[xx] == 0) {
-			M[xx] = moves++;
+		ll xx = x; // pointer
+		ll dist = 1;
+		while (1) { // traverse
+			path.push_back(xx);
+
+			current[xx] = dist++;
 			xx = d(xx);
 			
-			// if xx has been previously explored and was not a loop,
-			if (0 <= xx && xx <= n && L[xx] == 0) {
-				L[x] = 0;
-				return 0;
+			// moved forward!
+			if (L[xx] == -2) { // if it eventually goes to 0, out of bounds or another loop
+				for (ll p : path) {
+					L[p] = -2;
+				}
+				return L[x];
+			}
+			if (current[xx] != 0) { // if xx has been stepped on!
+				if (xx == x) {
+					for (ll p : path) {
+						L[p] = dist - 1;
+					}
+					return L[x];
+				} else {
+					ll number = -2;
+					for (ll p : path) {
+						if (p == xx) number = dist - current[xx];
+						L[p] = number;
+					}
+					return L[x];
+				}
 			}
 		}
-		L[x] = xx == x ? moves - 1 : 0;
-		return L[x];
+		return -2;
 	}
-	
-	// finds length of loop starting at x, 0 if no loop
-	ll l(ll x) {
-		if (x > n || x <= 0) return 0;
-		if (L[x] != -1) return L[x];
-		
-		if (loop(x) != 0) return loop(x);
-		L[x] = 0;
-		l(d(x));
-		return L[x];
-	}
-	
 	
 	void main() {	
 		ll length = 0;
@@ -102,9 +113,6 @@ namespace SOLVE {
 		}
 		
 		cout << ans << endl;
-		
-		
-		
 	}
 }
 
