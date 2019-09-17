@@ -37,16 +37,18 @@ namespace SOLVE {
 	void main() {
 		map<ll,ll> f;
 		ll n = 100000;
+		ll ans = 0;
 		REP(i,0,n) {
 			ll t = (i * (i+1)) / 2;
 			ll p = (i * (3*i - 1)) / 2;
 			ll h = i * (2*i - 1);
 			
-			if (++f[t] == 3) debug(t);
-			if (++f[p] == 3) debug(t);
-			if (++f[h] == 3) debug(t);
-			
+			if (++f[t] == 3) ans = t;
+			if (++f[p] == 3) ans = t;
+			if (++f[h] == 3) ans = t;
 		}
+		
+		cout << ans << endl;
 		
 	}
 }
