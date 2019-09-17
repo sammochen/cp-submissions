@@ -33,21 +33,7 @@ typedef double db;
 typedef vector<ll> VLL;
 typedef vector<VLL> VVLL;
 
-namespace SOLVE {
-	void show(VVLL grid) {
-		cout << "-----------------" << endl;
-		for (VLL g : grid) {
-			for (ll x : g) {
-				if (x == 0) cout << "  ";
-				else cout << x << ' ';
-			}
-			cout << endl;
-		}
-		
-		cout << endl;
-		cout << "-----------------" << endl;
-	}
-	
+namespace SOLVE {	
 	// check if grid[x][y] was a valid place
 	ll valid(VVLL grid, ll x, ll y, ll value) { 
 		REP(i,0,9) {
@@ -60,7 +46,7 @@ namespace SOLVE {
 	
 	// fill in grid[i][j]
 	ll solve(VVLL grid, ll ind) {
-		if (ind == 81) return grid[0][0] * 100 + grid[0][1] * 10 + grid[0][2];
+		if (ind == 81) return grid[0][0] * 100 + grid[0][1] * 10 + grid[0][2]; // ans for a completed square
 		ll i = ind / 9;
 		ll j = ind % 9;
 		
@@ -83,14 +69,12 @@ namespace SOLVE {
 	
 	void main() {
 		ll n = 50;
-		string a;
 		VVLL grid(9, VLL(9));
 		
+		string a;
 		ll ans = 0;
-		
 		REP(t,0,n) {
 			debug(t);
-			
 			cin >> a >> a;
 			REP(i,0,9) {
 				cin >> a;
