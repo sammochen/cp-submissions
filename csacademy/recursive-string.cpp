@@ -16,7 +16,7 @@ using namespace std;
 #define MP make_pair
 
 string to_string(string s) {return s;}
-string to_string(char c) {return "" + c;}
+string to_string(char c) { string s; s.push_back(c); return s; }
 template <typename A> string to_string(vector<A> v) { string s = "("; int first = 1; for (A a : v) { if (!first) { s += ", "; } first = 0; s += to_string(a); } s += ")"; return s; }
 
 void debug_out() {cerr << endl;}
@@ -33,33 +33,37 @@ typedef double db;
 typedef vector<ll> VLL;
 typedef vector<VLL> VVLL;
 
-ll const inf = (ll)1e18 + 5;
-
 namespace SOLVE {	
-	void main() {
-		ll n;
-		cin >> n;
-		// create 2 dp, one is only allowed to reset from 0/1 parity
-		VLL dp(2, -inf);
+	VLL dp(40, 1);
+	
+	// returns the kth letter, 1-indexed
+	string letter(ll index, ll k) {		
+		if (dp[index] < k) return "-1";
 		
-		ll x;
-		ll ans = -inf;
-		
-		REP(i,0,n) {
-			cin >> x;
-			
-			VLL next(2);
-			
-			
-			next[0] = max(dp[1] + x, x);
-			next[1] = dp[0] + x;	
-			
-			dp = next;
-			ans = max(ans, dp[1]);
-			// debug(i, dp);
+		if (index <= 2) {
+			string s;
+			s.push_back('a'+index);
+			return s;
 		}
 		
-		cout << ans << endl;
+		ll cur = 0;
+		REP(i,1,4) {
+			if (cur + dp[index - i] >= k) {
+				return letter(index - i, k - cur);
+			}
+			
+			cur += dp[index - i];
+		}
+		return "-1";
+	}
+	
+	void main() {
+		ll n, k;
+		cin >> n >> k;
+		REP(i,3,40) dp[i] = dp[i-3] + dp[i-2] + dp[i-1];
+		
+		// given k, you need to work backwards
+		cout << letter(n, k) << endl;
 	}
 }
 
