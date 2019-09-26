@@ -45,7 +45,7 @@ namespace SOLVE {
 		}
 		
 		// make a streak kinda thing
-		vector<vector<PLL>> dp(n, vector<PLL>(m)); // keeps track of biggest rectangle that ends at dp[i][j]
+		vector<vector<PLL>> dp(n, vector<PLL>(m)); // keeps track of biggest rectangle that ends at dp[i][j] with 0 on top and left
 		
 		REP(i,1,n) {
 			REP(j,1,m) {
@@ -67,6 +67,7 @@ namespace SOLVE {
 		
 		vector<vector<PLL>> zeros(n, vector<PLL>(m));
 		// keep track of streak of 0s - dp[i][j] is vertical, horizontal
+		// this takes care of right and bottom 0s
 		REP(i,0,n) {
 			REP(j,0,m) {
 				zeros[i][j].first = i == 0 ? !A[i][j] : A[i][j] ? 0 : zeros[i-1][j].first + 1;
@@ -77,7 +78,7 @@ namespace SOLVE {
 		ll ans = -1;
 		REP(i,0,n-1) {
 			REP(j,0,m-1) {
-				// i want to see if there are rectangles that have zeros bottom right
+				// find rectangle that satisfies both
 				if (dp[i][j].first == 0) continue;
 				ll di = i + 2 - dp[i][j].first;
 				ll dj = j + 2 - dp[i][j].second;
