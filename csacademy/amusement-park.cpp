@@ -76,7 +76,7 @@ namespace SOLVE {
 				ans[t][a] = 1 + (t == 0 ? 0 : ans[t-1][(a+1)%A] * (1 - p[t][a])) + p[t][a] * ans[t][(a+1)%A];
 			}
 		}
-		printf("%.20lf\n", ans[T-1][0]);
+		cout << setprecision(20) << ans[T-1][0] << endl;
 	}
 }
 
