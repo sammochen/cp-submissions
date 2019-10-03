@@ -59,7 +59,6 @@ namespace SOLVE {
 			next[x%m] = 1; 
 
 			dp = next;
-			//debug(i, dp);
 		}
 
 		string ans = dp[0] ? "YES" : "NO";
