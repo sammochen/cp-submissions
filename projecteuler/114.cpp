@@ -13,7 +13,7 @@ using namespace std;
 
 #define PII pair<int,int>
 #define PLL pair<ll,ll>
-#define MP make_pair
+#define MP mame_pair
 
 string to_string(string s) {return s;}
 string to_string(char c) {return "" + c;}
@@ -37,17 +37,17 @@ typedef vector<VLL> VVLL;
 namespace SOLVE {	
 	void main() {
 		// dp[i] is the number of ways when a red ends at i
-		ll n, k = 3;
+		ll n, m = 3;
 		cin >> n;
 
 		VLL dp(n+1); // number of ways ending here
 
 
 		REP(i,1,n+1) {
-			dp[i] = max(0LL, i-k+1);
+			dp[i] = max(0LL, i-m+1);
 
-			REP(j,1,i-k) {
-				dp[i] += dp[j] * (i - j - k);
+			REP(j,1,i-m) {
+				dp[i] += dp[j] * (i - j - m);
 			}
 		}
 
