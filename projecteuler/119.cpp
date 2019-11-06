@@ -57,7 +57,6 @@ namespace SOLVE {
 		}
 
 		sort(nums.begin(), nums.end());
-		debug(nums, nums.size());
 
 		ll ans = nums[29];
 		cout << ans << endl;
