@@ -52,7 +52,9 @@ namespace SOLVE {
 		return pow(a, hyp(a, b-1));
 	}
 	void main() {
-		debug(hyp(1777,1855));
+		ll a = 1777, b = 1855;
+		ll ans = hype(a, b);
+		cout << ans << endl;
 	}
 }
 
