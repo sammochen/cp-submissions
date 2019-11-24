@@ -53,7 +53,7 @@ namespace SOLVE {
 	}
 	void main() {
 		ll a = 1777, b = 1855;
-		ll ans = hype(a, b);
+		ll ans = hyp(a, b);
 		cout << ans << endl;
 	}
 }
