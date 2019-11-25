@@ -41,6 +41,26 @@ namespace SOLVE {
 		ll a, b, d;
 	};
 
+	VLL bellmanfords(vector<edge> & E, ll n, ll s) {
+		VLL d(n, inf);
+		d[s] = 0;
+
+		REP(i,0,n-1) {
+			for (edge e : E) {
+				d[e.b] = min(d[e.b], d[e.a] + e.d);
+			}
+		}
+
+		for (edge e : E) {
+			if (d[e.a] + e.d < d[e.b]) {
+				VLL A;
+				return A;
+			}
+		}
+
+		return d;
+	}
+
 	void main() {
 		ll n, m;
 		cin >> n >> m;
@@ -51,22 +71,9 @@ namespace SOLVE {
 			E[i] = {a,b,d};
 		}
 
-		VLL d(n, inf);
-		d[0] = 0;
-
-		REP(i,0,n-1) {
-			for (edge e : E) {
-				d[e.b] = min(d[e.b], d[e.a] + e.d);
-			}
-		}
-
-		for (edge e : E) {
-			if (d[e.a] + e.d < d[e.b]) {
-				cout << "possible" << endl;
-				return;
-			}
-		}
-		cout << "not possible" << endl;
+		VLL ans = bellmanfords(E, n, 0);
+		if (ans.size() == 0) cout << "possible" << endl;
+		else cout << "not possible" << endl;
 	}
 }
 
