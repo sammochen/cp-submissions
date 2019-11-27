@@ -42,17 +42,10 @@ namespace SOLVE {
 	map<pair<ll,string>, ll> dp;
 	map<pair<ll,string>, ll> done;
 
-	ll isempty(string mask) {
-		for (char c : mask) {
-			if (c != ' ') {
-				return 0;
-			}
-		}
-		return 1;
-	}
-
-	ll get(ll ind, string mask, ll diff) {
-		if (ind == n * m && isempty(mask)) return 0; // at the end, there must be no brackets
+	// diff is no of ( - no of )
+	// count is no of ( or )
+	ll get(ll ind, string mask, ll diff, ll count) {
+		if (ind == n * m && count == 0) return 0; // at the end, there must be no brackets
 		if (ind == n * m) return -inf; 
 		if (ind % m == 0 && diff != 0) return -inf; // on a new row, brackets must be the same
 		if (diff < 0) return -inf;
@@ -69,7 +62,7 @@ namespace SOLVE {
 
 		// 3 transitions:
 		// 1. do nothing: "continuing the rectangle/continuing the empty"
-		ans = max(ans, get(ind+1, mask, diff));
+		ans = max(ans, get(ind+1, mask, diff, count));
 
 		if (!A[x][y]) {
 			// 2. if i am at an open bracket and i want to remove it, i must also close the respective bracket
@@ -81,35 +74,21 @@ namespace SOLVE {
 						string newmask = mask;
 						newmask[y] = ' ';
 						newmask[yy] = ' ';
-						ans = max(ans, get(x*m+yy+1, newmask, diff) + 1);
+						ans = max(ans, get(x*m+yy+1, newmask, diff, count - 2) + 1);
 						break;
 					}
 				}
 			}
-			// 3. i can put in open OR closed
+			// 3. i can put in a open and a close!
 			if (mask[y] == ' ') {
-				string openmask = mask;
-				openmask[y] = '(';
-				ans = max(ans, get(ind+1, openmask, diff + 1));
-
-				// can only put in closed if there is an open!! (that is not blocked!)
-				ll ok = 0;
-				ll d = 1; // amount of )
-				RREP(yy,y,0) {
-					if (A[x][yy]) break;
-					if (mask[yy] == ')') d++;
-					else if (mask[yy] == '(') d--;
-					if (d == 0) {
-						ok = 1;
-						break;
-					}
+				REP(yy,y+1,m) {
+					if (A[x][yy] || mask[yy] != ' ') break;
+					string newmask = mask;
+					newmask[y] = '(';
+					newmask[yy] = ')';
+					ans = max(ans, get(x*m+yy+1, newmask, diff, count + 2));
 				}
-				if (ok) {
-					string closemask = mask;
-					closemask[y] = ')';
-					ans = max(ans, get(ind+1, closemask, diff - 1));
-				}
-			}
+			} 
 		} 
 
 		dp[{ind,mask}] = ans;
@@ -119,22 +98,24 @@ namespace SOLVE {
 
 	VVLL ansA;
 	ll id;
-	void build(ll ind, string mask, ll diff) {
+	void build(ll ind, string mask, ll diff, ll count) {
 		if (ind == n * m) return; 
 
 		ll x = ind / m;
 		ll y = ind % m;
 
-		VLL ans(4);
-		vector<string> nextmask(4);
-		VLL nextdiff(4);
-		VLL nextind(4);
-		// 4 transitions:
+		VLL ans(m+2);
+		vector<string> nextmask(m+2);
+		VLL nextdiff(m+2);
+		VLL nextind(m+2);
+		VLL nextcount(m+2);
+		// 3 transitions:
 		// 1. do nothing: "continuing the rectangle/continuing the empty"
-		ans[0] = get(ind+1, mask, diff);
+		ans[0] = get(ind+1, mask, diff, count);
 		nextmask[0] = mask;
 		nextdiff[0] = diff;
 		nextind[0] = ind+1;
+		nextcount[0] = count;
 
 		if (!A[x][y]) {
 			// 2. if i am at an open bracket and i want to remove it, i must also close the respective bracket
@@ -146,49 +127,34 @@ namespace SOLVE {
 						string newmask = mask;
 						newmask[y] = ' ';
 						newmask[yy] = ' ';
-						ans[1] = get(x*m+yy+1, newmask, diff) + 1;
+						ans[1] = get(x*m+yy+1, newmask, diff, count - 2) + 1;
 						nextmask[1] = newmask;
 						nextdiff[1] = diff;
 						nextind[1] = x*m+yy+1;
+						nextcount[1] = count - 2;
 						break;
 					}
 				}
 			}
-			// 3. i can put in open OR closed
+			// 3. i can put in a open and a close!
 			if (mask[y] == ' ') {
-				string openmask = mask;
-				openmask[y] = '(';
-				ans[2] = get(ind+1, openmask, diff + 1);
-				nextmask[2] = openmask;
-				nextdiff[2] = diff + 1;
-				nextind[2] = ind+1;
-
-				// can only put in closed if there is an open!! (that is not blocked!)
-				ll ok = 0;
-				ll d = 1; // amount of )
-				RREP(yy,y,0) {
-					if (A[x][yy]) break;
-					if (mask[yy] == ')') d++;
-					else if (mask[yy] == '(') d--;
-					if (d == 0) {
-						ok = 1;
-						break;
-					}
+				REP(yy,y+1,m) {
+					if (A[x][yy] || mask[yy] != ' ') break;
+					string newmask = mask;
+					newmask[y] = '(';
+					newmask[yy] = ')';
+					ans[2+yy] = get(x*m+yy+1, newmask, diff, count + 2);
+					nextmask[2+yy] = newmask;
+					nextdiff[2+yy] = diff;
+					nextind[2+yy] = x*m+yy+1;
+					nextcount[2+yy] = count + 2;
 				}
-				if (ok) {
-					string closemask = mask;
-					closemask[y] = ')';
-					ans[3] = get(ind+1, closemask, diff - 1);
-					nextmask[3] = closemask;
-					nextdiff[3] = diff - 1;
-					nextind[3] = ind+1;
-				}
-			}
+			} 
 		}
 		
 		ll besti;
 		ll bestans = -inf;
-		REP(i,0,4) {
+		REP(i,0,m+2) {
 			if (ans[i] > bestans) {
 				bestans = ans[i];
 				besti = i;
@@ -205,35 +171,33 @@ namespace SOLVE {
 				ansA[x][y] = 0;
 			}
 		} else if (besti == 1) {
-			// close
+			// close existing
 			REP(yy, y, m) {
 				ansA[x][yy] = ansA[x-1][y];
 				if (mask[yy] == ')') break;
 			}
-		} else if (besti == 2) {
-			// new open 
-		} else if (besti == 3) {
-			// new close
-			RREP(yy,y,0) {
+		} else {
+			// open new one
+			REP(yy,y,besti-1) {
 				ansA[x][yy] = id;
-				if (mask[yy] == '(') break;
 			}
 			id++;
 			
 		}
-		build(nextind[besti], nextmask[besti], nextdiff[besti]);
+		build(nextind[besti], nextmask[besti], nextdiff[besti], nextcount[besti]);
 	}
 
 
 	void main() {
-		cin >> n >> m;
+		scanf("%lld%lld", &n, &m);
 		A.resize(n, VLL(m));
-		ansA.resize(n, VLL(m));
+		ansA.resize(n, VLL(m, -2));
 		id = 1;
 
 		REP(i,0,n) {
-			string s;
-			cin >> s;
+			char buf[105];
+			scanf("%104s", buf);
+			string s = buf;
 			REP(j,0,m) {
 				A[i][j] = s[j] == '.' ? 0 : 1;
 			}
@@ -241,27 +205,23 @@ namespace SOLVE {
 
 		string emptymask = "";
 		REP(i,0,m) emptymask += " ";
-		ll ans = get(0,emptymask,0);
-		cout << ans << endl;
-		build(0, emptymask, 0);
+		ll ans = get(0,emptymask,0,0);
+		build(0, emptymask, 0, 0);
+
+		printf("%lld\n", ans);
 		REP(i,0,n) {
 			REP(j,0,m) {
-				cout << ansA[i][j] << ' ';
+				printf("%lld ", ansA[i][j]);
 			} 
-			cout << endl;
+			printf("\n");
 		}
 	}
 }
 
 
-signed main() {
-	ios::sync_with_stdio(false);
-	cin.tie(0);
-	cout.tie(0);
-	
+signed main() {	
 	int t;
 	t = 1;
-	// cin >> t;
 	while (t--) {
 		SOLVE::main();
 	}
