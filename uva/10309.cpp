@@ -88,7 +88,7 @@ namespace SOLVE {
 
 		// strategy: fill it in row by row, and keep the top rows perfect
 		// the i = 0 row can be anything - only 2^10 possibilities.
-		// fill the rest up iff necessarily
+		// fill the rest up iff necessary
 		if (i == 0) {
 			vector<string> B = A;
 			swcross(B, i, j);
