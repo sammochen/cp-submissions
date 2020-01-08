@@ -51,48 +51,40 @@ template <typename A, typename B, typename C> void in(A & a, B & b, C & c) { in(
 const ll inf = (ll)1e18 + 5;
 
 namespace SOLVE {	
-	ll first = 1;
 	void main() {
-		if (!first) cout << endl;
-		first = 0;
+		ll L, n;
+		in(L, n);
+		L *= 100;
+		ll l = 0, r = 0, lcur = L, rcur = L;
 
-		ll n, t, m;
-		cin >> n >> t >> m;
-		vector<queue<PLL>> sides(2); // sides[0] is L, [1] is R
-		VLL ans(m);
-
-		REP(i,0,m) {
+		REP(i,0,n) {
 			ll x;
 			string s;
-			cin >> x >> s;
-			if (s == "left") sides[0].push({x,i});
-			else sides[1].push({x,i});
-		}
-
-		ll time = -inf;
-		ll side = 0; // 0-L, 1-R
-		while (sides[0].size() || sides[1].size()) {
-			// if there are no cars, it waits until a car arrives on either end
-			ll firstcar = inf;
-			if (sides[0].size()) firstcar = min(firstcar, sides[0].front().first);
-			if (sides[1].size()) firstcar = min(firstcar, sides[1].front().first);
-			time = max(time, firstcar);
-
-			// load all the cars that are there, and load it
-			ll count = 0;
-			while (sides[side].size() && sides[side].front().first <= time && count < n) {
-				ans[sides[side].front().second] = time+t;
-				sides[side].pop();
-				count++;
+			in(x, s);
+			if (s == "left") {
+				if (lcur + x > L) {
+					lcur = x;
+					l++;
+				} else {
+					lcur += x;
+				}
+			} else {
+				if (rcur + x > L) {
+					rcur = x;
+					r++;
+				} else { 
+					rcur += x;
+				}
 			}
-
-			time += t;
-			side = !side;
 		}
 
-		REP(i,0,m) {
-			cout << ans[i] << endl;
+		ll ans;
+		if (l <= r) {
+			ans = 2 * r;
+		} else {
+			ans = 2 * l - 1;
 		}
+		printf("%lld\n", ans);
 	}
 }
 
@@ -100,7 +92,7 @@ namespace SOLVE {
 signed main() {
 	ll t;
 	t = 1;
-	cin >> t;
+	in(t);
 	REP(i,0,t) {
 		SOLVE::main();
 	}
