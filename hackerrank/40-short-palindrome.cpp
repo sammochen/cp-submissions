@@ -74,7 +74,7 @@ namespace SOLVE {
 			REP(b,0,26) {
 				addmod(a4[a][b][b][a], a3[a][b][b]);
 				addmod(a3[b][a][a], a2[b][a]);
-				addmod(a2[b][a], a1[a]);
+				addmod(a2[b][a], a1[b]);
 			}
 			addmod(a1[a], 1);
 		}
