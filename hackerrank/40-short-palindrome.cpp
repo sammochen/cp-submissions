@@ -82,7 +82,7 @@ namespace SOLVE {
 		ll ans = 0;
 		REP(i,0,26) {
 			REP(j,0,26) {
-				addmod(a, freq[i][j][j][i]);
+				addmod(ans, a4[i][j][j][i]);
 			}
 		}
 		cout << ans << endl;
