@@ -34,6 +34,8 @@ typedef  long long ll;
 typedef double db;
 typedef vector<ll> VLL;
 typedef vector<VLL> VVLL;
+typedef vector<VVLL> VVVLL;
+typedef vector<VVVLL> VVVVLL;
 
 void in(string & s) {
 	char buf[100]; // note the 100 limit
@@ -52,41 +54,35 @@ const ll inf = (ll)1e18 + 5;
 const ll mod = 1e9+7;
 
 namespace SOLVE {	
+	void addmod(ll & a, ll b) {
+		a += b;
+		a %= mod;
+	}
+
 	void main() {
 		string s;
 		cin >> s;
-		map<string,ll> freq;
-		REP(i,0,s.length()) {
-			string a;
-			a += s[i];
-			REP(j,0,26) {
-				string b;
-				char c = j + 'a';
-				b += c;
-				freq[a+b+b+a] += freq[a+b+b];
-				freq[b+a+a] += freq[b+a];
-				freq[b+a] += freq[b];
 
-				freq[a+b+b+a] %= mod;
-				freq[b+a+a] %= mod;
-				freq[b+a] %= mod;
+		VLL a1(26);
+		VVLL a2(26, VLL(26));
+		VVVLL a3(26, VVLL(26, VLL(26)));
+		VVVVLL a4(26, VVVLL(26, VVLL(26, VLL(26))));
+		
+
+		REP(i,0,s.length()) {
+			ll a = s[i] - 'a';
+			REP(b,0,26) {
+				addmod(a4[a][b][b][a], a3[a][b][b]);
+				addmod(a3[b][a][a], a2[b][a]);
+				addmod(a2[b][a], a1[a]);
 			}
-			freq[a]++;
-			freq[a] %= mod;
+			addmod(a1[a], 1);
 		}
 
 		ll ans = 0;
 		REP(i,0,26) {
 			REP(j,0,26) {
-				char c = i + 'a';
-				char d = j + 'a';
-				string a;
-				a += c;
-				a += d;
-				a += d;
-				a += c;
-				ans += freq[a];
-				ans %= mod;
+				addmod(a, freq[i][j][j][i]);
 			}
 		}
 		cout << ans << endl;
