@@ -51,37 +51,46 @@ template <typename A, typename B, typename C> void in(A & a, B & b, C & c) { in(
 const ll inf = (ll)1e18 + 5;
 
 namespace SOLVE {	
-	// preprocess s.
-	// if kmp[i] == j, the length of the suffix that is also a prefix
-	VLL kmp(string s) {
-		VLL k(s.length());
-		k[0] = 0; // by definition, otherwise the whole substring is included
-
-		ll i = 1, len = 0;
-		while (i < s.length()) {
-			if (s[i] == s[len]) {
-				k[i] = len+1;
-				i++;
-				len++;
-			} else {
-				if (len == 0) {
-					k[i] = 0;
-					i++;
-				} else {
-					len = k[len - 1];
-				}
-			}
+	ll sub(string & s, string & t) {
+		if (s == t) return 1;
+		if (s.length() % t.length() != 0) return 0;
+		REP(i,0,s.length()) {
+			if (s[i] != t[i % t.length()]) return 0;
 		}
-		return k;
+		return 1;
+	}
+
+	map<string, ll> done, dp;
+	ll get(string s) {
+		if (done[s]) return dp[s];
+		ll n = s.length();
+		ll ans = n;
+		if (n == 1) return 1;
+
+		// see how it could be subdivided, wholly by itself
+		string t;
+		REP(len,1,n) {
+			t += s[len-1];
+			if (sub(s, t)) ans = min(ans, get(t));
+		}
+
+		// or, split the string up into two
+		REP(len,1,n) {
+			string a = s.substr(0,len);
+			string b = s.substr(len);
+			ans = min(ans, get(a) + get(b));
+		}
+
+		done[s] = 1;
+		dp[s] = ans;
+		return ans;
 	}
 
 	void main() {
 		string s;
-		while (cin >> s, s != ".") {
-			VLL k = kmp(s);
-			ll cycle = s.length() - k[s.length() - 1];
-			ll ans = s.length() / cycle;
-			cout << ans << endl;
+		while (cin >> s, s != "*") {
+			ll ans = get(s);
+			printf("%lld\n", ans);
 		}
 	}
 }
