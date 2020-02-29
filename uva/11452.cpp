@@ -29,52 +29,47 @@ typedef pair<ll,ll> PLL;
 
 const ll inf = (ll)1e18 + 5;
 
-void solve() {
-	ll n, m;
-	cin >> n >> m;
-	VLL A(n);
-	map<ll,ll> edge;
-	map<ll,ll> pos;
-	REP(i,0,n) {
-		cin >> A[i];
-		pos[A[i]] = i;
-	}
+// preprocess s.
+// if kmp[i] == j, the length of the suffix that is also a prefix
+VLL kmp(string s) {
+	VLL k(s.length());
+	k[0] = 0; // by definition, otherwise the whole substring is included
 
-	REP(i,0,m) {
-		ll x;
-		cin >> x;
-		edge[x] = 1;
-	}
-
-	// work out the earliest that each position can go to
-	VLL earliest(n);
-	vector<PLL> pairs;
-	ll low = A[0], high = A[0];
-	REP(i,1,n) {
-		if (edge[i]) {
-			low = min(low, A[i]);
-			high = max(high, A[i]);
+	ll i = 1, len = 0;
+	while (i < s.length()) {
+		if (s[i] == s[len]) {
+			k[i] = len+1;
+			i++;
+			len++;
 		} else {
-			pairs.push_back({low, high});
-			low = A[i];
-			high = A[i];
+			if (len == 0) {
+				k[i] = 0;
+				i++;
+			} else {
+				len = k[len - 1];
+			}
 		}
 	}
+	return k;
+}
 
-	pairs.push_back({low, high});
-	
-	REP(i,1,pairs.size()) {
-		if (pairs[i-1].second > pairs[i].first) {
-			cout << "NO" << endl;
-			return;
-		}
+void solve() {
+	string s;
+	cin >> s;
+	VLL k = kmp(s);
+	string repeat = s, ans = "";
+
+	ll rep = 0;
+	REP(i,0,k.size()) {
+		if (k[i] * 2 == i+1) rep = (i+1)/2;
 	}
+	rep = ((ll)s.length() / 2 / rep) * rep;
+	repeat = s.substr(0, rep);
 
-	cout << "YES" << endl;
-	return;
-
+	ans = repeat.substr(s.length() - 2 * repeat.length());
 	
-
+	while (ans.size() < 8) ans = ans + repeat;
+	cout << ans.substr(0, 8) << "..." << endl;
 }
 
 signed main() {
