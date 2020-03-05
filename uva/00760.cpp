@@ -30,41 +30,29 @@ typedef pair<ll,ll> PLL;
 const ll inf = (ll)1e18 + 5;
 
 void solve() {
-	string s, t;
-	ll first = 1;
-	while (cin >> s >> t) {
-		if (!first) cout << endl;
-		first = 0;
-
-		map<string,ll> A;
-		REP(i,0,s.length()) {
-			string sub = "";
-			REP(j,i,s.length()) {
-				sub.push_back(s[j]);
-				A[sub] = 1;
+	string s;
+	cin >> s;
+	map<string,ll> A;
+	set<string> ans;
+	ll len = 0;
+	
+	REP(i,0,s.length()) {
+		string sub = "";
+		REP(j,i,s.length()) {
+			sub.push_back(s[j]);
+			A[sub]++;
+			if (A[sub] >= 2 && sub.length() > len) {
+				ans = {sub};
+			} else if (A[sub] >= 2 && sub.length() == len) {
+				ans.insert(sub);
 			}
 		}
-
-		set<string> ans;
-		ll len = 0;
-		REP(i,0,t.length()) {
-			string sub = "";
-			REP(j,i,t.length()) {
-				sub.push_back(t[j]);
-				if (A[sub]) {
-					if (sub.length() > len) {
-						len = sub.length();
-						ans = {sub};
-					} else if (sub.length() == len) {
-						ans.insert(sub);
-					}
-				}
-			}
-		}
-
-		if (ans.size() == 0) cout << "No common sequence." << endl;
-		for (string a : ans) cout << a << endl;
 	}
+
+
+	if (len == 0) cout << "No repetitions found!" << endl;
+	else cout << *ans.begin() << endl;
+
 }
 
 signed main() {
