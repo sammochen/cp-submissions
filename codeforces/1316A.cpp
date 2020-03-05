@@ -30,45 +30,24 @@ typedef pair<ll,ll> PLL;
 const ll inf = (ll)1e18 + 5;
 
 void solve() {
-	string s, t;
-	ll first = 1;
-	while (cin >> s >> t) {
-		if (!first) cout << endl;
-		first = 0;
+	ll n, k;
+	cin >> n >> k;
+	ll sum = 0;
 
-		map<string,ll> A;
-		REP(i,0,s.length()) {
-			string sub = "";
-			REP(j,i,s.length()) {
-				sub.push_back(s[j]);
-				A[sub] = 1;
-			}
-		}
-
-		set<string> ans;
-		ll len = 0;
-		REP(i,0,t.length()) {
-			string sub = "";
-			REP(j,i,t.length()) {
-				sub.push_back(t[j]);
-				if (A[sub]) {
-					if (sub.length() > len) {
-						len = sub.length();
-						ans = {sub};
-					} else if (sub.length() == len) {
-						ans.insert(sub);
-					}
-				}
-			}
-		}
-
-		if (ans.size() == 0) cout << "No common sequence." << endl;
-		for (string a : ans) cout << a << endl;
+	REP(i,0,n) {
+		ll x;
+		cin >> x;
+		sum += x;
 	}
+
+	cout << min(k, sum) << endl;
+
+
 }
 
 signed main() {
 	ll t = 1;
+	cin >> t;
 	REP(i,0,t) solve();
 	return 0;
 }
