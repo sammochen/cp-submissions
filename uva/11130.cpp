@@ -29,22 +29,24 @@ typedef pair<ll,ll> PLL;
 
 const ll inf = (ll)1e18 + 5;
 
-ll test = 1;
 void solve() {
-    db d, v, u;
-    cin >> d >> v >> u;
-    if (u <= v || v == 0) {
-        printf("Case %lld: can't determine\n", test++);
-        return;
+    db a, b, v, A, s;
+    while (cin >> a >> b >> v >> A >> s, a||b||v||A||s) {
+        db rad = A/90.0 * acos(0);
+        db x1 = a/2, y1 = b/2;
+        db x2 = x1 + v*s*cos(rad), y2 = y1 + v*s*sin(rad);
+        db dx = x2 - x1;
+        db dy = y2 - y1;
+
+        ll ansx = round(dx/2/a);
+        ll ansy = round(dy/2/b);
+        cout << ansx << ' ' << ansy << endl;
+
     }
-    db time1 = d/u;
-    db time2 = d/sqrt(u*u-v*v);
-    printf("Case %lld: %.3f\n", test++, abs(time1-time2));
 }
 
 signed main() {
 	ll t = 1;
-    cin >> t;
 	REP(i,0,t) solve();
 	return 0;
 }
