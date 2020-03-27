@@ -89,6 +89,7 @@ void solve() {
 
 signed main() {
 	init();
+    debug(goods);
     ll most = 0;
     REP(i,1,n) {
         ll factors = pf(i);
