@@ -29,37 +29,41 @@ typedef pair<ll,ll> PLL;
 
 const ll inf = (ll)1e18 + 5;
 
+
+ll count(ll x) {
+	ll ans = 0;
+	REP(i,0,50) {
+		if ((1LL<<i) & x) ans++;
+	}
+	return ans;
+}
 void solve() {
-	ll n, k, d;
-	cin >> n >> k >> d;
-	VLL A(n);
-	REP(i,0,n) {
-		cin >> A[i];
+	ll x, p;
+	cin >> x >> p;
+
+	if (x == 0 || p == 0) {
+		cout << count(x) << endl;
+		return;
 	}
 
-	map<ll,ll> freq;
-	ll count = 0;
-	ll ans = inf;
-	REP(i,0,d) {
-		freq[A[i]]++;
-		if (freq[A[i]] == 1) count++;
-	}
-	ans = min(ans, count);
+	ll v = x;
+	ll num = 0;
+	while (1) {
+		v -= p;
+		num++;
+		if (v < 0) break;
 
-	REP(i,d,n) {
-		freq[A[i-d]]--;
-		if (freq[A[i-d]] == 0) count--;
-		freq[A[i]]++;
-		if (freq[A[i]] == 1) count++;
-
-		ans = min(ans, count);
+		if (count(v) <= num && num <= v) {
+			cout << num << endl;
+			return;
+		}
 	}
-	cout << ans << endl;
+	cout << -1 << endl;
+
 }
 
 signed main() {
 	ll t = 1;
-	cin >> t;
 	REP(i,0,t) solve();
 	return 0;
 }
