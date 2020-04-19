@@ -14,6 +14,7 @@ typedef pair<ll,ll> PLL;
 #define all(x) x.begin(), x.end()
 #define rall(x) x.rbegin(), x.rend()
 #define mst(x,v) memset(x, v, sizeof(x))
+#define sz(x) (ll)x.size()
 
 string to_string(string s) {return s;}
 string to_string(char c) {string s = string(1, c);return s;}
@@ -39,13 +40,12 @@ template <typename Head, typename... Tail> void in(Head & H, Tail & ... T) {in(H
 const ll inf = (ll)1e18 + 5;
 ll mod = 1e9+7;
 
-
 VVLL operator*(VVLL a, VVLL b) {
-	VVLL c(a.size(), VLL(b[0].size()));
+	VVLL c(sz(a), VLL(sz(b)));
 	
-	REP(i,0,a.size()) {
-		REP(j,0,a[0].size()) {
-			REP(k,0,b[0].size()) {
+	REP(i,0,sz(a)) {
+		REP(j,0,sz(a[0])) {
+			REP(k,0,sz(b[0])) {
 				c[i][k] += a[i][j] * b[j][k];
 				c[i][k] %= mod;
 			}
@@ -57,8 +57,8 @@ VVLL operator*(VVLL a, VVLL b) {
 
 VVLL operator^(VVLL a, ll k) {
 	if (k == 0) {
-		VVLL b(a.size(), VLL(a.size()));
-		REP(i,0,a.size()) b[i][i] = 1;
+		VVLL b(sz(a), VLL(sz(a)));
+		REP(i,0,sz(a)) b[i][i] = 1;
 		return b;
 	}
 	VVLL half = a ^ (k / 2);
