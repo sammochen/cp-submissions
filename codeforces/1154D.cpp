@@ -73,34 +73,28 @@ template <typename A, typename B> void in(A & a, B & b) { in(a); in(b); }
 template <typename A, typename B, typename C> void in(A & a, B & b, C & c) { in(a); in(b); in(c); }
 
 void solve() {
-	VLL A(3);
-	rep(i,0,3) cin >> A[i];
-	//         1 2 3 4 5 6 7
-	VLL eat = {0,1,2,0,2,1,0};
+	ll n, b, a;
+	in(n, b, a);
+	VLL A(n);
+	rep(i,0,n) in(A[i]);
 
-	ll ans = 0;
-	rep(i,0,7) {
-		VLL B = A;
-		ll cur = 0;
-		
-		ll x = B[0] / 3;
-		upmin(x, B[1] / 2);
-		upmin(x, B[2] / 2);
+	ll bb = b, aa = a;
+	// greedy - always use battery if there is sunlight
+	ll cur = 0;
+	rep(i,0,n) {
+		if (bb == 0 && aa == 0) break;
+		cur++;
 
-		B[0] -= 3*x;
-		B[1] -= 2*x;
-		B[2] -= 2*x;
-		cur += 7*x;
-
-		rep(j,i,inf) {
-			if (B[eat[j%7]] == 0) break;
-			B[eat[j%7]]--;
-			cur++;
+		if (A[i] == 1 && bb > 0 && aa != a) {
+			bb--;
+			aa++;
+		} else if (aa > 0) {
+			aa--;
+		} else {
+			bb--;
 		}
-		upmax(ans, cur);
 	}
-
-	cout << ans << endl;
+	cout << cur << endl;
 }
 
 signed main() {
