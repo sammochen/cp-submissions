@@ -1,76 +1,136 @@
-/*
-Original problem:
-Author: sammochen
-*/
-
 #define _CRT_SECURE_NO_WARNINGS
 #include "bits/stdc++.h"
 
 using namespace std;
-
-#define REP(x,l,u) for(ll x = l;x<u;x++)
-#define RREP(x,l,u) for(ll x = l;x>=u;x--)
-
-#define PII pair<int,int>
-#define PLL pair<ll,ll>
-#define MP make_pair
-
-string to_string(string s) {return s;}
-string to_string(char c) {return "" + c;}
-template <typename A> string to_string(vector<A> v) { string s = "("; int first = 1; for (A a : v) { if (!first) { s += ", "; } first = 0; s += to_string(a); } s += ")"; return s; }
-template <typename A, typename B> string to_string(pair<A,B> p) { return "(" + to_string(p.first) + ", " + to_string(p.second) + ")"; }
-
-void debug_out() {cerr << endl;}
-template <typename Head, typename... Tail> void debug_out(Head H, Tail... T) { cerr << " " << to_string(H); debug_out(T...); }
-
-#ifndef ONLINE_JUDGE
-#define debug(...) do { cerr << "[" << #__VA_ARGS__ << "]:", debug_out(__VA_ARGS__); } while (false)
-#else
-#define debug(...) do { } while (false)
-#endif
-
-typedef  long long ll;
+typedef long long ll;
 typedef double db;
-typedef vector<ll> VLL;
+typedef vector<string> VS;
+typedef vector<int> VI;
+typedef vector<VI> VVI;
+typedef vector<ll> VLL; 
 typedef vector<VLL> VVLL;
+typedef vector<VVLL> VVVLL;
+typedef pair<ll,ll> PLL;
+typedef map<ll,ll> MLL;
+typedef set<ll> SLL;
+typedef queue<ll> QLL;
 
-namespace SOLVE {	
-	void main() {
-		ll n, k;
-		cin >> n >> k;
-		VLL coins(k);
-		REP(i,0,k) cin >> coins[i];
+#define rep(x,l,u) for(ll x = l; x < u; x++)
+#define rrep(x,l,u) for(ll x = l; x >= u; x--)
+#define fe(x,a) for (auto x : a)
+#define all(x) x.begin(), x.end()
+#define rall(x) x.rbegin(), x.rend()
+#define mst(x,v) memset(x, v, sizeof(x))
+#define sz(x) (ll)x.size()
+#define lg(x) (ll)x.length()
+#define fi first
+#define se second
+#define pb push_back
 
-		VVLL dp(n+1, VLL(k+1)); // dp[i][j] is how many ways to make i with the last coin being j
+#define umap unordered_map
+#define uset unordered_set
+#define mset multiset
+#define pqueue priority_queue
 
-		dp[0][0] = 1;
-		REP(i,0,n+1) {
-			REP(j,1,k+1) {
-				ll coin = coins[j-1];
+struct FASTINPUT {
+	void f(string & s) { char buf[400005]; ll a = scanf("%s", buf); a++; s = buf; }
+	void f(ll & x) { ll a = scanf("%lld", &x); a++; }
+	void f(int & x) { ll a = scanf("%d", &x); a++; }
+	void f(double & x) { ll a = scanf("%lf", &x); a++; }
+	template <typename A, typename B> void f(pair<A,B> & p) { f(p.first); f(p.second); }
+	template <typename A> void f(vector<A> & x) { for (auto & y : x) f(y); }
+	
+	void read() {}
+	template <typename Head, typename... Tail> void read(Head & H, Tail & ... T) { f(H); read(T...); }
+};
 
-				if (i - coin < 0) dp[i][j] = 0;
-				else {
-					REP(k,0,j+1) { 
-						dp[i][j] += dp[i - coin][k];
-					}
-				}
-			}
-		}
+struct FASTOUTPUT {
+	void f(string s) { printf("%s", s.c_str()); }
+	void f(ll x) { printf("%lld", x); }
+    void f(int x) { printf("%d", x); }
+	void f(double x) { printf("%.20f", x); }
+    void f(char x) { printf("%c", x); }
+    void f(const char* a) { printf("%s", a); }
+	
+	void print() {}
+	template <typename Head, typename... Tail> void print(Head H, Tail ... T) { f(H); print(T...); }
+};
 
-		ll ans = 0;
-		REP(i,0,k+1) ans += dp[n][i];
-		cout << ans << endl;
-	}
+struct DEBUG {
+	string open = "[", close = "]", sep = ", ";
+
+	string f(string s) { return s; }
+	string f(char c) { return string(1, c); }
+	string f(int x) { return to_string(x); }
+	string f(ll x) { return to_string(x); }
+	string f(db x) { return to_string(x); }
+	string f(const char* a) { return a; }
+	template <typename A, typename B> string f(pair<A,B> p) { return open + f(p.first) + sep + f(p.second) + close; }
+	template <typename A> string f(A v) { string s = open; for (auto a : v) { if (s != open) { s += sep; } s += f(a); } s += close; return s; } 
+
+	void show() {cout << endl;}
+	template <typename Head, typename... Tail> void show(Head H, Tail... T) { cout << " " << f(H); show(T...); }
+};
+
+#define fin(...) do { FASTINPUT inp; inp.read(__VA_ARGS__); } while (false)
+#define fout(...) do { FASTOUTPUT out; out.print(__VA_ARGS__); } while (false)
+#define debug(...) do { DEBUG deb; cout << "[" << #__VA_ARGS__ << "]:", deb.show(__VA_ARGS__); } while (false)
+
+VLL di = {0,0,1,-1,1,-1,1,-1};
+VLL dj = {1,-1,0,0,-1,-1,1,1};
+ll ob(ll i, ll n) { return i < 0 || i >= n; } // out of bounds
+ll tp(ll x) { return (1LL<<x); }
+ll roundup(ll a, ll b) { return a % b ? a/b + 1 : a/b; }
+template <typename A, typename B> ll exist(A a, B b) { return a.find(b) != a.end(); }
+vector<string> ssplit(string s) { vector<string> ans; stringstream ss; ss << s; while (ss >> s) ans.pb(s); return ans; }
+ll makemod(ll & x, ll m) { x %= m; x += m; x %= m; return x; }
+ll powmod(ll a, ll b, ll m) {
+	if (b == 0) return 1;
+	ll h = powmod(a, b/2, m);
+	ll ans = h*h%m;
+	return b%2 ? ans*a%m : ans;
 }
 
+void upmin(ll & x, ll v) { x = min(x, v); }
+void upmax(ll & x, ll v) { x = max(x, v); }
+
+const ll inf = (ll)1e18 + 5;
+const ll mod = 1e9+7;
+const ll mod2 = 998244353;
+const db eps = 1e-10;
+const db pi = acos(0) * 2;
+const string nl = "\n";
+
+VLL A;
+ll dp[255][55];
+
+ll get(ll k, ll i, VLL & A) {
+	if (k < 0) return 0;
+	if (i == sz(A)) {
+		if (k == 0) return 1;
+		return 0;
+	}
+	if (dp[k][i] != -1) return dp[k][i];
+
+	dp[k][i] = get(k, i+1, A) + get(k-A[i], i, A);
+	return dp[k][i];
+}
+
+void solve() {
+	mst(dp, -1);
+	
+	ll k, n;
+	fin(k, n);
+	A.resize(n);
+	fin(A);
+
+	fout(get(k, 0, A), nl);
+
+
+}
 
 signed main() {
-	int t;
-	t = 1;
-	// cin >> t;
-	while (t--) {
-		SOLVE::main();
-	}
-
+	ll t = 1;
+	rep(i,0,t) solve();
 	return 0;
 }
