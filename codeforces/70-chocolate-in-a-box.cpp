@@ -109,17 +109,12 @@ void solve() {
     fin(A);
 
     // how many ways can you choose a number to make the total xor 0
-    VLL pre(n+1), suf(n+1);
-    rep(i,0,n) {
-        pre[i+1] = pre[i] ^ A[i];
-    }
-    rrep(i,n-1,0) {
-        suf[i] = suf[i+1] ^ A[i];
-    }
+    ll x = 0;
+    rep(i,0,n) x ^= A[i];
 
     ll ans = 0;
     rep(i,0,n) {
-        if ((pre[i] ^ suf[i+1]) < A[i]) ans++;
+        if ((x ^ A[i]) < A[i]) ans++;
     }
     fout(ans, nl);
 }
