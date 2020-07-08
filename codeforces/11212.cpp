@@ -78,7 +78,6 @@ struct DEBUG {
 
 VLL di = {0,0,1,-1,1,-1,1,-1};
 VLL dj = {1,-1,0,0,-1,-1,1,1};
-vector<char> dname = {'R', 'L', 'D', 'U'};
 ll ob(ll i, ll n) { return i < 0 || i >= n; } // out of bounds
 ll tp(ll x) { return (1LL<<x); }
 ll roundup(ll a, ll b) { return a % b ? a/b + 1 : a/b; }
@@ -102,103 +101,76 @@ const db eps = 1e-10;
 const db pi = acos(0) * 2;
 const string nl = "\n";
 
-VVLL A;
-const ll n = 4;
-ll curi, curj;
-vector<char> ans;
+VLL A;
+ll n;
 
-ll good() {
-	ll cnt[16] = {0};
-	ll par = 0;
-	rep(i,0,n) {
-		rep(j,0,n) {
-			if (A[i][j] == 0) {
-				curi = i;
-				curj = j;
-			} else {
-				par += count(cnt + 1, cnt + A[i][j], 0);
-				cnt[A[i][j]] = 1;
-			}
-		}
-	}
-	return (par + curi + 1) % 2 == 0;
-}
-
-ll atleast() {
+ll h() {
 	ll ans = 0;
-	rep(i,0,n) {
-		rep(j,0,n) {
-			ll x = A[i][j];
-			if (x == 0) continue;
-			ll exi = (x-1) / 4;
-			ll exj = (x-1) % 4;
-			ans += abs(i-exi) + abs(j-exj);
-		}
+	rep(i,1,n) {
+		if (A[i] - A[i-1] != 1) ans++;
 	}
+	if (A[0] != 1) ans++;
 	return ans;
 }
 
-// depth, previous direction
-ll dfs(ll dep, ll prev, ll limit) {
-	ll al = atleast();
-	if (al + dep > limit) return al + dep;
-	if (al == 0) return -1;
+ll sorted() {
+	return h() == 0;
+}
 
-	ll next = inf;
-	rep(x,0,4) {
-		if (x == (prev^1)) continue; // dont undo
+void addto(VLL & A, VLL & B, ll i, ll j) {
+	rep(x,i,j+1) A.pb(B[x]);
+}
 
-		ll ii = curi + di[x];
-		ll jj = curj + dj[x];
-		if (ob(ii, n) || ob(jj, n)) continue;
+ll dfs(ll dep, ll limit) {
+	// h() is how many things are wrong with it. you can fix up to 3 things in one step.
+	if (3 * dep + h() > 3 * limit) return 0;
+	if (sorted()) return 1;
 
-		// move
-		ans.pb(dname[x]);
-		swap(A[ii][jj], A[curi][curj]);
-		swap(ii, curi);
-		swap(jj, curj);
+	rep(i,0,n) {
+		rep(j,i,n) {
+			// cut i->j, inclusive
+			VLL B;
+			addto(B, A, 0, i-1);
+			addto(B, A, j+1, n-1);
 
-		ll res = dfs(dep+1, x, limit);
-		if (res == -1) return -1;
-		upmin(next, res);
+			// paste i->j somewhere inside
+			rep(k,0,sz(B) + 1) {
+				VLL copy = A;
+				A.clear();
 
-		ans.pop_back();
-		swap(A[ii][jj], A[curi][curj]);
-		swap(ii, curi);
-		swap(jj, curj);
+				addto(A, B, 0, k-1);
+				addto(A, copy, i, j);
+				addto(A, B, k, sz(B)-1);
+
+				if (dfs(dep+1, limit)) return 1;
+
+				A = copy;
+			}
+		}
 	}
-	return next;
+	return 0;
 }
 
 ll ida() {
-	for (ll d = atleast();;) {
-		ll next = dfs(0, -1, d);
-		if (next == -1) return 1;
-		if (next == inf) return 0;
-		if (next >= 50) return 0;
-		d = next;
+	rep(i,0,inf) {
+		if (dfs(0, i)) return i;
 	}
 }
 
 void solve() {
-	A.resize(4, VLL(4));
-	ans.clear();
+	ll test = 1;
+	while (scanf(" %lld", &n), n) {
+		A.clear();
+		A.resize(n);
+		fin(A);
 
-	fin(A);	
+		fout("Case ", test++, ": ", ida(), nl);
 
-	// bfs
-	if (!good() || !ida()) {
-		fout("This puzzle is not solvable.\n");
-	} else {
-		fe(c, ans) fout(c);
-		fout(nl);
 	}
-
 }
 
 signed main() {
 	ll t = 1;
-	fin(t);
 	rep(i,0,t) solve();
 	return 0;
 }
