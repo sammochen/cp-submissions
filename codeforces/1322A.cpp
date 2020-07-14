@@ -104,18 +104,6 @@ void solve() {
 	string s;
 	fin(n, s);
 
-	ll cnt = 0;
-	fe(c, s) {
-		if (c == '(') cnt++;
-		else cnt--;
-	}
-
-	if (cnt != 0) {
-		fout(-1, nl);
-		return;
-	}
-
-
 	ll cur = 0;
 	ll ans = 0;
 	ll last = -1;
@@ -132,6 +120,7 @@ void solve() {
 			}
 		}
 	}
+	if (cur != 0) ans = -1;
 
 	fout(ans, nl);
 }
