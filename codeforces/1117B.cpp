@@ -106,11 +106,10 @@ void solve() {
 	fin(n, m, k);
 	VLL A(n);
 	fin(A);
+	sort(rall(A));
 
-	mset<ll> S(all(A));
-
-	ll one = *S.rbegin();
-	ll two = *(--(--S.end()));
+	ll one = A[0];
+	ll two = A[1];
 	
 	ll x = m/(k+1);
 	ll ans = (x * k + (m % (k+1))) * one + x * two;
