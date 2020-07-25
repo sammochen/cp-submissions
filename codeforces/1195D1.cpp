@@ -94,7 +94,7 @@ void upmin(ll & x, ll v) { x = min(x, v); }
 void upmax(ll & x, ll v) { x = max(x, v); }
 
 const VLL mods = {(ll)1e9 + 7, 998244353, (ll)1e6 + 3, (ll)1e18 + 5};
-const ll mod = mods[0];
+const ll mod = mods[1];
 const ll inf = mods[3];
 const db eps = 1e-10;
 const db pi = acos(0) * 2;
@@ -102,16 +102,26 @@ const string nl = "\n";
 
 
 void solve() {
-	ll n, k;
-	fin(n, k);
+	ll n;
+	fin(n);
+	VLL A(n);
+	fin(A);
 
-	rep(i,0,inf) {
-		ll a = (i * (i+1)) / 2;
-		if (a - (n-i) == k) {
-			fout(n-i, nl);
-			return;
+	ll ans = 0;
+	rep(i,0,n) {
+		string s = to_string(A[i]);
+		ll t = 0;
+		fe(c, s) {
+			t *= 100;
+			t += (c - '0') * 11;
+			t %= mod;
 		}
+		
+		ans += n * t;
+		ans %= mod;
 	}
+	fout(ans, nl);
+
 }
 
 signed main() {
