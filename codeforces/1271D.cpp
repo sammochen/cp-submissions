@@ -102,12 +102,6 @@ const string nl = "\n";
 
 
 void solve() {
-	// go in order of castles
-	// have choice of defending castle or not
-	// at each point, how many can it give up?
-	// if i go backwards, i look at how many i need to do all the rest.
-	// always optimal to do it last.
-
 	ll n, m, k;
 	fin(n, m, k);
 	VLL A(n), B(n), C(n);
@@ -118,13 +112,13 @@ void solve() {
 	VLL big(n); // big[i] is the latest i that goes into i
 	rep(i,0,n) big[i] = i;
 
-	// dp - vertex, amount of coins
 	rep(i,0,m) {
 		ll a, b;
 		fin(a, b);
 		a--; b--;
 		upmax(big[b], a);
 	}
+	
 	VVLL E(n);
 	rep(i,0,n) {
 		E[big[i]].pb(i);
