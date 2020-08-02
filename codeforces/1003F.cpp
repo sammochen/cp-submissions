@@ -100,15 +100,19 @@ const db eps = 1e-10;
 const db pi = acos(0) * 2;
 const string nl = "\n";
 
+ll dp[305][305];
 ll get(ll i, ll j, VLL & B) {
 	if (i < 0 || j < 0) return 0;
+	if (dp[i][j] != -1) return dp[i][j];
 
-	// longest segment that both i and j share
-	if (B[i] == B[j]) return 1 + get(i-1, j-1, B);
-	return 0;
+	if (B[i] == B[j]) dp[i][j] = 1 + get(i-1, j-1, B);
+	else dp[i][j] =0;
+	return dp[i][j];
 }
 
 void solve() {
+	mst(dp, -1);
+
 	ll n;
 	fin(n);
 	VS A(n);
@@ -142,7 +146,6 @@ void solve() {
 			}
 			if (cnt == 1) continue;
 
-			// every merge deletes (len - 1) spaces and (allletters - len) letters
 			ll spaces = cnt * (len - 1);
 			ll letters = cnt * (pre[i+len] - pre[i] - len);
 			ll cur = pre.back() + n-1 - spaces - letters;
