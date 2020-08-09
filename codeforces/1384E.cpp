@@ -115,9 +115,6 @@ void solve() {
 
 	VVLL E(k);
 
-	// count number of unique c->d transforms. 
-	// 26 x 26 adj matrix.
-	// if there is a->b, b->z, a->z, that can become 2 transforms
 	VLL reach(k);
 	rep(i,0,n) {
 		ll x = a[i] - 'a', y = b[i] - 'a';
@@ -126,8 +123,6 @@ void solve() {
 		E[y].pb(x);
 	}
 
-
-	// each component is solved - find the largest directed acyclic graph
 	VLL dp(tp(k));
 	dp[0] = 1; // the set of nothing is acyclic
 	ll ans = 0;
