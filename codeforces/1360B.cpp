@@ -47,11 +47,13 @@ struct FASTINPUT {
 struct FASTOUTPUT {
 	void f(string s) { printf("%s", s.c_str()); }
 	void f(ll x) { printf("%lld", x); }
-    void f(int x) { printf("%d", x); }
+	void f(int x) { printf("%d", x); }
 	void f(double x) { printf("%.20f", x); }
-    void f(char x) { printf("%c", x); }
-    void f(const char* a) { printf("%s", a); }
-	
+	void f(char x) { printf("%c", x); }
+	void f(const char* a) { printf("%s", a); }
+	template <typename A> void f(vector<A> & x) { for (auto & y : x) { f(y); f(" ");}  }
+
+
 	void print() {}
 	template <typename Head, typename... Tail> void print(Head H, Tail ... T) { f(H); print(T...); }
 };
@@ -83,34 +85,31 @@ ll tp(ll x) { return (1LL<<x); }
 ll roundup(ll a, ll b) { return a % b ? a/b + 1 : a/b; }
 template <typename A, typename B> ll exist(A a, B b) { return a.find(b) != a.end(); }
 vector<string> ssplit(string s) { vector<string> ans; stringstream ss; ss << s; while (ss >> s) ans.pb(s); return ans; }
-ll makemod(ll & x, ll m) { x %= m; x += m; x %= m; return x; }
-ll powmod(ll a, ll b, ll m) {
-	if (b == 0) return 1;
-	ll h = powmod(a, b/2, m);
-	ll ans = h*h%m;
-	return b%2 ? ans*a%m : ans;
-}
+void makemod(ll & x, ll m) { x %= m; x += m; x %= m; }
+ll powmod(ll a, ll b, ll m) { if (b == 0) return 1;	ll h = powmod(a, b/2, m); ll ans = h*h%m; return b%2 ? ans*a%m : ans; }
+bool isvowel(char ch) { return (ch=='a' || ch=='e' || ch=='i' || ch=='o' || ch=='u'); }
+ll sign(ll x) {	return x > 0 ? 1 : x < 0 ? -1 : 0; }
 
 void upmin(ll & x, ll v) { x = min(x, v); }
 void upmax(ll & x, ll v) { x = max(x, v); }
 
-const ll inf = (ll)1e18 + 5;
-const ll mod = 1e9+7;
-const ll mod2 = 998244353;
+const VLL mods = {(ll)1e9 + 7, 998244353, (ll)1e6 + 3, (ll)1e18 + 5};
+const ll mod = mods[0];
+const ll inf = mods[3];
 const db eps = 1e-10;
 const db pi = acos(0) * 2;
 const string nl = "\n";
-
 
 void solve() {
 	ll n;
 	fin(n);
 	VLL A(n);
 	fin(A);
-
-	sort(all(A));
+	sort(A.rbegin(), A.rend());
 	ll ans = inf;
-	rep(i,0,n-1) upmin(ans, A[i+1] - A[i]);
+	rep(i,1,n) {
+		upmin(ans, A[i-1]-A[i]);
+	}
 	fout(ans, nl);
 }
 
