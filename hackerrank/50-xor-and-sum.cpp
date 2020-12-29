@@ -187,41 +187,54 @@ const db eps = 1e-10;
 const db pi = acos(0) * 2;
 const string nl = "\n";
 
+const ll nax = 10005;
+ll P[nax] = {0};
+void init() {
+	rep(i,2,nax) {
+		if (P[i] != 0) continue;
+		for (ll j = i*i; j < nax; j += i) {
+			P[j] = i;
+		}
+	}
+}
+
+ll isprime(ll x) {
+	return (P[x] == 0 && x > 1);
+}
+
+ll issumprime(ll x) {
+	ll v = 0;
+	while (x) {
+		v += x % 10;
+		x /= 10;
+	}
+	return v;
+}
 
 void solve() {
-	ll n = 700000;
-	ll nax = 314159;
-	string a, b;
-	fin(a, b);
-	a = string(n - lg(a), '0') + a;
-	b = string(n - lg(b), '0') + b;
-
-	// for each position in a, see how many 0s and 1s there are to the right
-	VLL pre = {0};
-	fe(c, b) {
-		pre.pb(pre.back() + c - '0');
+	init();
+	rep(i,0,100000) {
+		ll ok = 1;
+		// 99999
+		// check every 3 digit
+		ll div = 100000;
+		rep(times, 1, 4) {
+			ll ii = i;
+			rep(j,0,times) {
+				if (!issumprime(ii % 1000)) {
+					ok = 0;
+					break;
+				}
+				ii /= 10;
+			}
+			div /= 10;
+		}
+		if (ok) debug(i);
 	}
-	
-	ll ans = 0;
-	ll two = 1;
-	rrep(i,n-1,0) {
-		ll L = i; // inclusive
-		ll R = min(n-1, L + nax); // inclusive
-		
-		ll ones = pre[R+1] - pre[L];
-		ll zeros = nax + 1 - ones;
-		ll cnt = a[i] == '0' ? ones : zeros;
-		ans += cnt * two;
-		ans %= mod;
-		two *= 2;
-		two %= mod;
-	}
-	fout(ans, nl);
 }
 
 signed main() {
 	ll t = 1;
-	// fin(t);
 	rep(i,0,t) solve();
 	return 0;
 }
